@@ -4,7 +4,7 @@ echo "            Wellcome fliping coin combination problem         "
 echo "------------------------------------------------------------------"
 #CONSTANT
 HEAD=0
-NUMBER_OF_COIN=2
+NUMBER_OF_COIN=3
 
 #DECLARTION OF DICTIONARY
 declare -A doubletFlip
@@ -12,8 +12,8 @@ declare -A doubletFlip
 #USER INPUT
 read -p "Enter the Number of Flip : " numberOfFlip
 
-# FUNCTION FOR DOUBLET
-doublet()
+# FUNCTION FOR TRIPLET
+triplet()
 {
    for(( count=0; count<$numberOfFlip; count++ ))
    do
@@ -44,7 +44,7 @@ totalDoubletPercentage()
 }
 
 #FUNCTION CALL 
-doublet
+triplet
 totalDoubletPercentage
 echo "   " ${!doubletFlip[@]}
 echo "   " ${doubletFlip[@]}
