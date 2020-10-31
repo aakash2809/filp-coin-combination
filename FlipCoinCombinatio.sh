@@ -1,37 +1,51 @@
+#!/bin/bash 
 
-#!/bin/bash -x
-
-headCount=0
-tailCount=0
+echo "            Wellcome fliping coin combination problem         "
+echo "------------------------------------------------------------------"
+#CONSTANT
 HEAD=0
-#TAIL=1
-count=0
-#DECLARETION OF DICTIONARY
-declare -A singlet
+NUMBER_OF_COIN=2
 
+#DECLARTION OF DICTIONARY
+declare -A doubletFlip
 
-echo "                       Welcome to fliping coin combination problem                   "
-echo "--------------------------------------------------------------------------------------"
-read -p "enter the no.of flips" numberOfFlips
-# STORE HEAD COUNT AND TAIL COUNT IN DICTIONARY
-for(( count=0 ; count<$numberOfFlips; count++ ))
-do
-   result=$(( RANDOM % 2 ))
+#USER INPUT
+read -p "Enter the Number of Flip : " numberOfFlip
 
-   if [ $result -eq $HEAD ]
-   then
-      singlet[HEAD]=$((++headCount))
-   else
-      singlet[TAIL]=$((++tailCount))
-   fi
-done
+# FUNCTION FOR DOUBLET
+doublet()
+{
+   for(( count=0; count<$numberOfFlip; count++ ))
+   do
+      for(( countCoin=0; countCoin<$NUMBER_OF_COIN; countCoin++ ))
+      do
+         result=$(( RANDOM % 2 ))
 
-#PERCENTAGE OF WININGS
-singletHeadPercentage=`echo "${singlet[HEAD]}" $numberOfFlips | awk '{ printf $1 * 100 / $2 }'`
-singletTailPercentage=`echo "${singlet[TAIL]}" $numberOfFlips | awk '{print $1 *100 / $2 }'`
+         if [ $result -eq $HEAD ]
+         then
+           coinFace+=H
+				
+         else
+            coinFace+=T
+         fi
+		done
+		((doubletFlip[$coinFace]++))
+		coinFace=""
+	done
+}
 
-echo "head count:" $headCount
-echo "tail count:"$tailCount 
-echo "single head percentage : " $singletHeadPercentage "%"
-echo "single tail percentage : " $singletTailPercentage "%"
+#TOTAL PERCENTAGE OF DOUBLET COMBINATION
+totalDoubletPercentage()
+{
+   for index in ${!doubletFlip[@]}
+   do
+      doubletFlip[$index]=`echo "${doubletFlip[$index]}" $numberOfFlip | awk '{printf $1 * 100 / $2 }'`
+   done
+}
+
+#FUNCTION CALL 
+doublet
+totalDoubletPercentage
+echo "   " ${!doubletFlip[@]}
+echo "   " ${doubletFlip[@]}
 
