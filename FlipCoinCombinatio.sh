@@ -1,51 +1,69 @@
-#!/bin/bash 
+#!/bin/bash
 
-echo "            Wellcome fliping coin combination problem         "
-echo "------------------------------------------------------------------"
-#CONSTANT
-HEAD=0
-NUMBER_OF_COIN=3
+#VARIABLES
+maximum=0
+temp=0
+ 
+echo "          Wellcome flip coin combination problem           "
+echo "------------------------------------------------------------"
 
-#DECLARTION OF DICTIONARY
-declare -A doubletFlip
+#DECLARAtION OF  A DICTIONARY
+declare -A flipStore
 
-#USER INPUT
-read -p "Enter the Number of Flip : " numberOfFlip
-
-# FUNCTION FOR TRIPLET
-triplet()
+#FUNCTION TO FIND HEAD AND TAIL COMBINATION
+totalFlip()
 {
-   for(( count=0; count<$numberOfFlip; count++ ))
-   do
-      for(( countCoin=0; countCoin<$NUMBER_OF_COIN; countCoin++ ))
-      do
-         result=$(( RANDOM % 2 ))
-
-         if [ $result -eq $HEAD ]
-         then
-           coinFace+=H
-				
-         else
-            coinFace+=T
-         fi
+	for((i=0; i<$1; i++))
+	do
+		face=""
+		for((j=0; j<$2; j++))
+		do
+			#GENERATE RANDOM NUMBER
+			flipCoin=$((RANDOM%2))
+			if [ $flipCoin -eq 0 ]
+			then
+				face+=H
+			else
+				face+=T
+			fi
 		done
-		((doubletFlip[$coinFace]++))
-		coinFace=""
+		flipStore[$face]=$((${flipStore[$face]}+1))
+	done
+	echo "Count of all combination     :${flipStore[@]}"
+}
+
+
+#FUNCTION TO FIND PERCENTAGE AND ALSO FIND MAXIMUM HEAD OR TAIL WINNING COMBINANTION
+totalPercentageFlip()
+{
+	for count in ${!flipStore[@]}
+	do
+		flipStore[$count]=$(( ${flipStore[$count]} *100 / $times ))
+		temp=${flipStore[$count]}
+		if [ $temp -gt $maximum ]
+		then
+			maximum=$temp
+			key=$count
+		fi
 	done
 }
 
-#TOTAL PERCENTAGE OF DOUBLET COMBINATION
-totalDoubletPercentage()
-{
-   for index in ${!doubletFlip[@]}
-   do
-      doubletFlip[$index]=`echo "${doubletFlip[$index]}" $numberOfFlip | awk '{printf $1 * 100 / $2 }'`
-   done
-}
+#CHECKING HEADS OR TAILS
+read -p "Enter number of times you want to flip:" times
+echo   "Enter choice "
+echo   "1)Singlet"
+echo   "2)Doublet"
+echo   "3)Triplet and so on:"
+read  coins
 
-#FUNCTION CALL 
-triplet
-totalDoubletPercentage
-echo "   " ${!doubletFlip[@]}
-echo "   " ${doubletFlip[@]}
+totalFlip $times $coins
+totalPercentageFlip
+
+echo "All head and tail combination:${!flipStore[@]}"
+echo "percentage of all combination:${flipStore[@]}"
+
+sort=( $( printf "%s\n" "${flipStore[@]}" | sort -n ) )
+echo "sorted order" ${sort[@]}
+
+echo "Max winning combination      :" $maximum "-" $key
 
